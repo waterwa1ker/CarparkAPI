@@ -1,0 +1,298 @@
+openapi: 3.0.0
+
+info:
+  title: Сервис Carpark API для управления автопарком
+  version: 0.0.1
+  
+servers:
+  - url: http:://localhost:8080/api/v1/
+    description: dev server
+paths:
+  /cars:
+    get:
+      summary: Метод получения списка машин
+      tags:
+        - Cars
+      operationId: getAllCars
+      responses:
+        '200':
+          description: Успешный ответ со списком машин
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/CarsDTO"
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error"
+  /cars/mileages:
+    get:
+      summary: Метод получения пробегов всех машин
+      tags:
+        - Cars
+      operationId: getMileages
+      responses:
+        '200':
+          description: Успешный ответ c массивом целочисленных значений пробегов машин
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                example: [1000, 500, 765]    
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error"     
+        
+  
+  /cars/get_price/{id}:
+    get:
+      summary: Метод получения информации о машине
+      tags:
+        - Cars
+      operationId: getPrice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор машины
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Успешный ответ c ценой аренды машины
+          content:
+            application/json:
+              schema:
+                type: integer
+                example: 1000
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error"         
+                
+                
+  /cars/find_by_id/{id}:
+    get:
+      summary: Метод получения информации о машине по идентификатору
+      tags:
+        - Cars
+      operationId: getCarById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор машины
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Успешный ответ c информацией о машине
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/CarDTO"
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error"
+  /cars/find_by_numberplate/{numberplate}:
+    get:
+      summary: Метод получения информации о машине по номерному знаку
+      tags:
+        - Cars
+      operationId: getCarByNumberplate
+      parameters:
+        - name: numberplate
+          in: path
+          required: true
+          description: Номерной знак машины
+          schema:
+            type: string
+          example: Y786FG
+      responses:
+        '200':
+          description: Успешный ответ c информацией о машине
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/CarDTO"
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error"   
+  /cars/add:
+    post:
+      summary: Метод регистрации машины
+      tags:
+        - Cars
+      operationId: registerCar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref : "#/components/schemas/CarDTO"
+      responses:
+        '200':
+          description: Успешный ответ о регистрации машины
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/CarDTO"
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error"   
+  /cars/{id}:
+    delete:
+      summary: Метод удаления автомобиля
+      tags:
+        - Cars
+      operationId: deleteCar
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор машины
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Успешный ответ об удалении машины
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/CarDTO"
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error"   
+    patch:
+      summary: Метод добавления информации о машине
+      tags:
+        - Cars
+      operationId: updateCar
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор машины
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Успешный ответ об обновлении информации о машине
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/CarDTO"
+        'default':
+          description: Все остальное
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/Error" 
+            
+components:
+  schemas:
+    Car:
+      type: object
+      required:
+        - id
+        - numberplate
+        - model
+        - yearOfManufacture
+        - carType
+        - mileage
+      properties:
+        id:
+          type: integer
+          example: 1
+        numberplate:
+          type: string
+          example: Y786FG
+        model:
+          type: string
+          example: Camry
+        yearOfManufacture:
+          type: integer
+          example: 2000
+        carType: 
+          type: string
+          enum:
+            - TAXI
+            - DELIVERY
+            - CAR_SHARING
+          description: Тип автомобиля
+        mileage:
+          type: integer
+          example: 1000
+    CarDTO:
+      type: object
+      required:
+        - numberplate
+        - model
+        - yearOfManufacture
+        - carType
+        - mileage
+      properties:
+        numberplate:
+          type: string
+          example: Y786FG
+        model:
+          type: string
+          example: Camry
+        yearOfManufacture:
+          type: integer
+          example: 2000
+        carType: 
+          type: string
+          enum:
+            - TAXI
+            - DELIVERY
+            - CAR_SHARING
+          description: Тип автомобиля
+        mileage:
+          type: integer
+          example: 1000
+    CarsDTO:
+      type: array
+      items:
+        $ref: "#/components/schemas/CarDTO"
+    Cars:
+      type: array
+      items:
+        $ref: "#/components/schemas/Car"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: Not found

@@ -7,6 +7,8 @@ import com.carpark.api.demo.exceptions.InvalidCreditsException;
 import com.carpark.api.demo.services.CarService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,11 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/cars")
 public class CarController {
 
     private final CarService carService;
     private final ModelMapper modelMapper;
+    private static final Logger log = LoggerFactory.getLogger(CarController.class);
 
     @Autowired
     public CarController(CarService carService, ModelMapper modelMapper) {
@@ -30,6 +33,7 @@ public class CarController {
 
     @GetMapping
     public List<CarDTO> findAll() {
+        log.info("/cars GET REQUEST");
         return carService.findAll().stream().map(this::convertToCarDTO).collect(Collectors.toList());
     }
 
@@ -77,7 +81,7 @@ public class CarController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCar(@PathVariable int id) {
         Car car = carService.findById(id);
         if (car == null) {
