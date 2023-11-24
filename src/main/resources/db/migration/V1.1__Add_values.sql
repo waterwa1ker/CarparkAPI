@@ -1,0 +1,1 @@
+insert into Car (numberplate, model, year_of_manufacture, mileage, car_type) values ('A123', 'Teana', 2000, 2000, 'TAXI');
